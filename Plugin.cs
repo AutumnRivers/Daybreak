@@ -44,7 +44,7 @@ namespace Daybreak_Midnight
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(BootMainMenuController), "Start")]
-        public static void BMPostfix()
+        public static void BMPostfix(BootMainMenuController __instance)
         {
             Console.WriteLine("Booted into main menu!");
             GameObject canvas = GameObject.Find("Canvas");
@@ -55,6 +55,8 @@ namespace Daybreak_Midnight
             Popup.ShowMessage(Daybreak.PLUGIN_NAME, ConstantVariables.OPENING_WARNING);
 
             AddManualEntries(canvas);
+
+            AddToMainMenu(__instance);
 
             BootAudioOptionsController bootAudio = canvas.transform.Find("AudioOptions").
                 GetComponent<BootAudioOptionsController>();
@@ -83,10 +85,64 @@ namespace Daybreak_Midnight
             // Add About Section
             ManualManager.AddNewEntry($"About {Daybreak.PLUGIN_NAME}",
                 CustomFilter.Filter(ConstantVariables.MANUAL_ENTRY), 0);
+        }
 
-            // Add Music Usage
-            ManualManager.AddNewEntry($"{Daybreak.PLUGIN_NAME} - Custom BGM",
-                CustomFilter.Filter(ConstantVariables.BGM_MANUAL), 1);
+        private static void AddToMainMenu(BootMainMenuController mainMenu)
+        {
+            GameObject apiDocsPanel = AddAPIDocs();
+
+            BootMainMenuController.MenuOption apiOption = new()
+            {
+                label = "Daybreak API",
+                disableInDemo = true,
+                panel = apiDocsPanel
+            };
+
+            apiOption.SetActionToDefaultNavigation();
+
+            mainMenu.options.Insert(5, apiOption);
+
+            mainMenu.Rebuild();
+        }
+
+        private static GameObject AddAPIDocs()
+        {
+            GameObject baseManual = GameObject.Find("Canvas").transform.Find("Manual").gameObject;
+            GameObject canvas = GameObject.Find("Canvas");
+            GameObject manualObj = GameObject.Instantiate(baseManual, canvas.transform).gameObject;
+
+            manualObj.name = "DaybreakAPI";
+
+            BootManualController manual = manualObj.GetComponent<BootManualController>();
+
+            for(var idx = manual.transform.GetChild(0).childCount - 1; idx >= 0; idx--)
+            {
+                UnityEngine.Object.Destroy(manual.transform.GetChild(0).GetChild(idx).gameObject);
+            }
+
+            manual.localizedName = "Daybreak API";
+            manual.entries.Clear();
+
+            AddAPIDocEntries(manual);
+
+            manual.Rebuild();
+
+            return manualObj;
+        }
+
+        private static void AddAPIDocEntries(BootManualController manual)
+        {
+            ManualManager.AddNewEntryToManual($"About {Daybreak.PLUGIN_NAME}",
+                CustomFilter.Filter(ConstantVariables.MANUAL_ENTRY), manual, 0);
+
+            ManualManager.AddNewEntryToManual("Custom BGM", CustomFilter.Filter(APIDocs.BGM_MANUAL), manual);
+            ManualManager.AddNewEntryToManual("Chat API - Basics", CustomFilter.Filter(APIDocs.CHAT1), manual);
+            ManualManager.AddNewEntryToManual("Chat API - Choices", CustomFilter.Filter(APIDocs.CHAT_CHOICES), manual);
+        }
+
+        private static void NavigateToApiDocs(BootMainMenuController mainMenu, int index)
+        {
+            mainMenu.Navigate(index);
         }
     }
 

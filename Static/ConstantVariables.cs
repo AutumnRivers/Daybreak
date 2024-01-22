@@ -17,23 +17,42 @@ namespace Daybreak_Midnight.Static
             $"<h2>Who can use {Daybreak.PLUGIN_NAME}?</h2>" + "\n\n" +
             "Anyone! It is licensed under the MIT License, and free for anyone to use as they so wish.";
 
+        public const string OPENING_WARNING = $"{Daybreak.PLUGIN_NAME} is successfully installed. " +
+            "You likely won't get support from the game devs if something breaks.\n\n" +
+            "Please check the <b>Daybreak API</b> selection for more information.";
+    }
+
+    public static class APIDocs
+    {
+        public const string CHAT1 = "<h1>Chat API - Basics</h1>\n\n" +
+            "The <b>Chat API</b> opens up the possibility to use the text chat in custom campaigns. " +
+            "You can use this for dialogue while the player is in a network!\n\n" +
+            "<h2>Sending A Message</h2>\n\n" +
+            "USAGE: [SendChatText(string Message, float Delay, [string Character])]\n" +
+            "'Message' - A <i>string</i> indicating the message contents.\n" +
+            "'Delay' - A <i>float</i> indicating how long the game should wait to send the message.\n" +
+            "'Character' - A <i>string</i> indicating a character name. If left blank, defaults to 'System'.";
+
+        public const string CHAT_CHOICES = "<h1>Chat API - Choices</h2>\n\n" +
+            "The <b>Chat API</b> allows you to also have multiple choices that the player can pick from. " +
+            "You could create entire branching paths with these!\n\n" + 
+            "<h2>Sending A Choice</h2>\n\n" +
+            "USAGE [ShowPlayerChoices(string choice1, [string choice2, string choice3])]\n" +
+            "You can have up to <b>three choices</b>. When the choice is made, you will be able to tell what the player chose with " +
+            "the <b>LastChoice()</b> method. This will return an <i>int</i> of the player's choice.\n\n" +
+            "It is <b>RECOMMENDED</b> to read the out-of-game documentation for more information.";
+
         public const string BGM_MANUAL = "<h1>Custom Background Music</h1>\n\n" +
             $"With {Daybreak.PLUGIN_NAME}, you can use custom background music in your scripts for your custom campaigns. " +
             "<b>If you are going to use custom music that is <i>not</i> yours, be sure to get permission from the artist!</b>\n\n" +
-            "<h2>Usage</h2>\n\n" +
-            "In scripting for your custom campaign, custom music is played just as custom SFX; [PlaySFX]. " +
-            "However, there is a difference. In order for your sound to be recognized as music, it <i>must</i> start with 'mus_' in the filename!\n\n" +
-            "For example; [mus_example.wav] in your custom campaign's \"/Audio\" folder. [PlaySFX('mus_example.wav')]\n\n" +
-            "<h2>Gotchas</h2>\n\n" +
-            "This implementation is, admittedly, not perfect. Enabling this will automatically disable MP's default background music, " +
-            "which means the rest of your campaign without custom music would become silent. You can fix this with the following command: " +
-            "[PlaySFX('resetbgm')].\n\n" +
-            "This will reset the background music back to TENSION.";
-
-        public const string OPENING_WARNING = $"{Daybreak.PLUGIN_NAME} is successfully installed. " +
-            "You likely won't get support from the game devs if something breaks.\n\n" +
-            "Please check the <b>Manual</b> for more information.";
-
-        public const string NETWORK_CHAT_PATH = "CameraController/CameraRig/Main Camera/UICamera/MainHUD/NetworkChat(Clone)/";
+            "<h2>Playing Music</h2>\n\n" +
+            "USAGE: [PlayCustomMusic(string filename)]\n" +
+            "Filename - The name of the <b>WAV</b> file to play, similar to <u>PlaySFX</u>. " +
+            "(e.g., an audio file named 'coolSong.wav' would be played as [PlayCustomMusic(\"coolSong\")].\n\n" +
+            "<h2>Resetting BGM</h2>\n\n" +
+            "PlayCustomMusic stops <i>Midnight Protocol's</i> usual background music handler when activated. " +
+            "This means that, if you do not reset your BGM, then your campaign will be completely silent from thereonout.\n\n" +
+            "By running <b>ResetBGM()</b> in your script, then the background music will reset back to TENSION, " +
+            "and Midnight Protocol will once again be in control of the pre-defined music.";
     }
 }
