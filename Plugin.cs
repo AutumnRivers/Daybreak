@@ -58,9 +58,6 @@ namespace Daybreak_Midnight
 
             AddToMainMenu(__instance);
 
-            BootAudioOptionsController bootAudio = canvas.transform.Find("AudioOptions").
-                GetComponent<BootAudioOptionsController>();
-
             MusicManager.musicVolume = SystemData.Instance.musicVolume;
         }
 

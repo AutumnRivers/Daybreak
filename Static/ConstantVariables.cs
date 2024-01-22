@@ -9,6 +9,8 @@ namespace Daybreak_Midnight.Static
         public const string DOUBLE_NEWLINE = "\n\n";
         public const int BASE_FONT_SIZE = 36;
 
+        public const string CONSOLE_PATH = "CameraController/CameraRig/Main Camera/UICamera/ConsoleCanvas/Console(Clone)";
+
         public const string MANUAL_ENTRY = $"<h1>{Daybreak.PLUGIN_NAME} v{Daybreak.PLUGIN_VERSION}</h1>" + "\n\n" +
             "Developed by <b>Autumn Rivers</b> using <b>BepInEx 5</b>." + "\n\n" +
             $"<h2>What is {Daybreak.PLUGIN_NAME}?</h2>" + "\n\n" +

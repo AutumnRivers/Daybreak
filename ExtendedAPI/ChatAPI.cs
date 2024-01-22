@@ -44,6 +44,12 @@ namespace Daybreak_Midnight.ExtendedAPI
         }
 
         [APIMethod]
+        public static void ShowPlayerChoices(PinionContainer container, string choice1, string choice2)
+        {
+            ShowPlayerChoices(container, choice1, choice2, null);
+        }
+
+        [APIMethod]
         public static void ShowPlayerChoices(PinionContainer container, string choice1, string choice2 = null, string choice3 = null)
         {
             if(choice1 == null && choice2 == null && choice3 == null)
