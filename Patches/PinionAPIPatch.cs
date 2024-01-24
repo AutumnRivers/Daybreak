@@ -29,7 +29,7 @@ namespace Daybreak_Midnight.Patches
             {
                 if (type.GetCustomAttribute(typeof(APISourceAttribute), inherit: false) != null)
                 {
-                    Console.WriteLine("Registering Custom API Method: " + type.Name);
+                    Console.WriteLine("Registering Custom API Source: " + type.Name);
                     yield return type;
                 }
             }

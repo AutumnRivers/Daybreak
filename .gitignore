@@ -398,4 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Libraries, must be taken from game
-/lib
+lib/Assembly-CSharp.dll

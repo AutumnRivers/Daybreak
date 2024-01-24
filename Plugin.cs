@@ -20,7 +20,7 @@ namespace Daybreak_Midnight
     {
         public const string PLUGIN_GUID = "autumnrivers.daybreak";
         public const string PLUGIN_NAME = "Daybreak";
-        public const string PLUGIN_VERSION = "0.0.1";
+        public const string PLUGIN_VERSION = "0.1.0";
 
         public static Harmony Harmony { get; } = new Harmony(PLUGIN_GUID);
 
@@ -135,6 +135,13 @@ namespace Daybreak_Midnight
             ManualManager.AddNewEntryToManual("Custom BGM", CustomFilter.Filter(APIDocs.BGM_MANUAL), manual);
             ManualManager.AddNewEntryToManual("Chat API - Basics", CustomFilter.Filter(APIDocs.CHAT1), manual);
             ManualManager.AddNewEntryToManual("Chat API - Choices", CustomFilter.Filter(APIDocs.CHAT_CHOICES), manual);
+
+            ManualManager.AddNewEntryToManual("SysOp API", CustomFilter.Filter(APIDocs.SYSOP_API_DOCS1), manual);
+
+            ManualManager.AddNewEntryToManual("Variables API - Basics",
+                CustomFilter.Filter(APIDocs.VARIABLES_API_DOCS1), manual);
+            ManualManager.AddNewEntryToManual("Variables API - Counters",
+                CustomFilter.Filter(APIDocs.VARIABLES_API_COUNTER), manual);
         }
 
         private static void NavigateToApiDocs(BootMainMenuController mainMenu, int index)
