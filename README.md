@@ -14,7 +14,7 @@ After the midnight, comes the Daybreak.
 * Download the latest Daybreak release
 * Place the downloaded `Daybreak_Midnight.dll` file into the `/BepInEx/plugins` folder of your Midnight Protocol installation.
 
-For detailed instructions on how to use the new scripthing methods, please check the [Documentation]("./docs/ExtendedAPI").
+For detailed instructions on how to use the new scripthing methods, please check the [Documentation](./docs/ExtendedAPI).
 
 ---
 

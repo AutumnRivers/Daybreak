@@ -23,3 +23,11 @@ TeleportSysOpToNode("a0", "examplesysop")
 `TeleportSysOpToNode(string nodeAddress, string sysOpId)`
 
 Teleports the SysOp to the node address.
+
+## Enabling/Disabling SysOps
+```cs
+DisableSysOp("examplesysop")
+```
+`DisableSysOp(string sysOpId)`
+
+Disables the target SysOp, hiding them from the map, and removing them from the turn list. Return them with `EnableSysOp(string sysOpId)`.
