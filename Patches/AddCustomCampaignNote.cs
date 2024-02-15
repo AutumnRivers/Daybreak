@@ -10,18 +10,6 @@ namespace Daybreak_Midnight.Patches
     [HarmonyPatch]
     public class AddCustomCampaignNote
     {
-        /*[HarmonyPostfix]
-        [HarmonyPatch(typeof(CustomGameData), nameof(CustomGameData.StartNewCustomCampaign))]
-        static void CustomCampaignPostfix(CustomGameData __instance)
-        {
-            bool hasDaybreakNote = __instance.progress.campaignNotes.Exists(s => s == "DaybreakUser");
-
-            if(!hasDaybreakNote)
-            {
-                __instance.progress.campaignNotes.Add("DaybreakUser");
-            }
-        }*/
-
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CustomGameData), "LoadInLogic")]
         static void CustomCampaignNotePostfix(CustomGameData __instance, ref CustomGameData customGameData)

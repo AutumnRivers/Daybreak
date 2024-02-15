@@ -103,8 +103,43 @@ namespace Daybreak_Midnight.ExtendedAPI
             targetSysOp.LastKnownLocation = node;
             targetSysOp.randomWalk = false;
 
-
             FloatingTextManager.Instance.SpawnRedactedText(node.transform, "-- SYSOP TARGET SET --");
+        }
+
+        [APIMethod]
+        public static void DisableSysOp(PinionContainer container, string sysOpId)
+        {
+            SysOp targetSysOp = GetSysOp(sysOpId);
+            if (targetSysOp == null)
+            {
+                container.LogError("SysOp not found!");
+                return;
+            }
+
+            targetSysOp.Skip = true;
+            targetSysOp.GameObject.SetActive(false);
+
+            GameController controller = GameObject.Find("GameController").GetComponent<GameController>();
+
+            controller.RemoveFromEnemyTurns(targetSysOp);
+        }
+
+        [APIMethod]
+        public static void EnableSysOp(PinionContainer container, string sysOpId)
+        {
+            SysOp targetSysOp = GetSysOp(sysOpId);
+            if (targetSysOp == null)
+            {
+                container.LogError("SysOp not found!");
+                return;
+            }
+
+            targetSysOp.Skip = false;
+            targetSysOp.GameObject.SetActive(true);
+
+            GameController controller = GameObject.Find("GameController").GetComponent<GameController>();
+
+            controller.AddToEnemyTurns(targetSysOp);
         }
 
         private static SysOp GetSysOp(string sysOpId = "")

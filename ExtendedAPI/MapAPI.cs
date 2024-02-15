@@ -32,5 +32,19 @@ namespace Daybreak_Midnight.ExtendedAPI
                 commandParser.Commands[exitIndex].disabled = !canExit;
             }
         }
+
+        [APIMethod]
+        public static void DisableTrace(PinionContainer container)
+        {
+            if(Active)
+            {
+                TraceBar trace = (TraceBar)Game.Controller.Trace;
+
+                trace.ManageThreatLevel = false;
+                trace.Trace.MinValue = 0;
+                trace.Trace.MaxValue = 0;
+                trace.Trace.NotifyChange();
+            }
+        }
     }
 }
