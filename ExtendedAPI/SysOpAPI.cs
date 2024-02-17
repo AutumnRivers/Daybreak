@@ -142,6 +142,19 @@ namespace Daybreak_Midnight.ExtendedAPI
             controller.AddToEnemyTurns(targetSysOp);
         }
 
+        [APIMethod]
+        public static bool IsSysOpActive(PinionContainer container, string sysOpId)
+        {
+            SysOp targetSysOp = GetSysOp(sysOpId);
+            if (targetSysOp == null)
+            {
+                container.LogError("SysOp not found!");
+                return false;
+            }
+
+            return targetSysOp.gameObject.activeSelf;
+        }
+
         private static SysOp GetSysOp(string sysOpId = "")
         {
             SysOp targetSysOp;

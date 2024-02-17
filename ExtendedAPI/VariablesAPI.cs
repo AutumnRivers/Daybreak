@@ -118,5 +118,25 @@ namespace Daybreak_Midnight.ExtendedAPI
                 return -1;
             }
         }
+
+        [APIMethod]
+        public static string GetCounterAsString(PinionContainer container, string counterName)
+        {
+            if (counterName == null || counterName == "")
+            {
+                container.LogError("Cannot have empty name!");
+                return "";
+            }
+
+            if (globalCounter.ContainsKey(counterName))
+            {
+                return globalCounter[counterName].ToString();
+            }
+            else
+            {
+                container.LogError("Counter doesn't exist! Did you forget to set it?");
+                return "";
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 using Daybreak_Midnight.Static;
 
@@ -45,6 +46,37 @@ namespace Daybreak_Midnight.ExtendedAPI
                 trace.Trace.MaxValue = 0;
                 trace.Trace.NotifyChange();
             }
+        }
+
+        [APIMethod]
+        public static void RemoveICE(PinionContainer container, string nodeFrom, string nodeTo)
+        {
+            Node nodeF = GetNode(nodeFrom);
+            Node nodeT = GetNode(nodeTo);
+
+            NodeConnection nodeConnection = nodeF.connections.FirstOrDefault(c => c.To == nodeT);
+
+            if(nodeConnection == null)
+            {
+                container.LogError("Couldn't find a connection between those nodes!");
+                return;
+            }
+
+            ICE connectionICE = nodeConnection.ICE;
+
+            Program killer = new Poison();
+
+            connectionICE.GetType().GetMethod("Die", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(connectionICE, [killer]);
+        }
+
+        private static Node GetNode(string nodeId)
+        {
+            NodeMap nodeMap = Game.Controller.nodeMap;
+
+            Node targetNode = nodeMap.Nodes.FirstOrDefault(n => n.Address == nodeId);
+
+            return targetNode;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Daybreak_Midnight
     {
         public const string PLUGIN_GUID = "autumnrivers.daybreak";
         public const string PLUGIN_NAME = "Daybreak";
-        public const string PLUGIN_VERSION = "0.1.0";
+        public const string PLUGIN_VERSION = "0.2.0";
 
         public static Harmony Harmony { get; } = new Harmony(PLUGIN_GUID);
 
