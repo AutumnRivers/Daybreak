@@ -18,16 +18,6 @@ namespace Daybreak_Midnight.XLogic.CampaignNotes
 
         public override string NodeID => ID;
 
-        public MPGraphNodeRemoveCampaignNote()
-        {
-            /*Text oTitleText = GameObject.Find("GraphNodeCampaignStart(Clone)/Title").GetComponent<Text>();
-            Text titleText = Instantiate(oTitleText, this.transform);
-
-            titleText.text = "REMOVE CAMPAIGN NOTE";
-
-            title = titleText;*/
-        }
-
         public override MPGraphNodeData Save()
         {
             data.value = inputField.text;
@@ -53,12 +43,18 @@ namespace Daybreak_Midnight.XLogic.CampaignNotes
 
         public override string Name => "Remove campaign note: " + note;
 
+        public RemoveCampaignNoteNode()
+        {
+            AddDynamicInput(typeof(TriggerPort), fieldName: "remove");
+            AddDynamicOutput(typeof(TriggerPort), fieldName: "removed");
+        }
+
         public override void Trigger(bool synapse = false)
         {
             if (!GameData.Progress.campaignNotes.Contains(note))
             {
                 base.Trigger(synapse);
-                Next("remove", synapse);
+                Next("removed", synapse);
             }
             else if (synapse)
             {

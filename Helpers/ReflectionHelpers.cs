@@ -11,11 +11,19 @@ namespace Daybreak_Midnight.Helpers
     internal static class ReflectionHelpers
     {
         private static readonly BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        private static readonly BindingFlags staticFlags = BindingFlags.NonPublic | BindingFlags.Static;
 
         public static void SetPrivateField<T, T2>(this T item, string fieldName, T2 newValue)
         {
             var type = item.GetType();
             var field = type.GetField(fieldName, flags);
+            field.SetValue(item, newValue);
+        }
+
+        public static void SetPrivateStaticField<T, T2>(this T item, string fieldName, T2 newValue)
+        {
+            var type = item.GetType();
+            var field = type.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Static);
             field.SetValue(item, newValue);
         }
 
@@ -32,9 +40,15 @@ namespace Daybreak_Midnight.Helpers
             return prop.GetValue(item);
         }
 
-        public static object GetPrivateField(this object item, string fieldName)
+        public static object GetPrivateField<T>(this T item, string fieldName)
         {
             FieldInfo field = item.GetType().GetField(fieldName, flags);
+            return field.GetValue(item);
+        }
+
+        public static object GetPrivateStaticField<T>(this T item, string fieldName)
+        {
+            FieldInfo field = item.GetType().GetField(fieldName, staticFlags);
             return field.GetValue(item);
         }
 
