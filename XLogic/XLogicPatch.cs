@@ -205,6 +205,8 @@ namespace Daybreak_Midnight.XLogic
                 RemoveCampaignNode.transform.GetChild(2).gameObject.GetComponent<MPGraphNodeInputPort>()
                     .id = "Remove";
 
+                removeCampaignNoteComponent.ClearUnecessaryComponents();
+
                 return removeCampaignNoteComponent;
             }
 
@@ -217,7 +219,7 @@ namespace Daybreak_Midnight.XLogic
 
                 AddSoftwareNode.name = "GraphAddSoftwareNode";
 
-                var addMissionComponent = AddMissionNodeObject.GetComponent<MPGraphNodeMission>();
+                var addMissionComponent = AddSoftwareNode.GetComponent<MPGraphNodeMission>();
                 var addSoftwareComponent = AddSoftwareNode.AddComponent<MPGraphAddSoftware>();
 
                 GameObject dropdownObj = AddSoftwareNode.transform.GetChild(5).gameObject;
@@ -235,6 +237,8 @@ namespace Daybreak_Midnight.XLogic
                 AddSoftwareNode.transform.GetChild(2).gameObject.GetComponent<Text>().text = "ADD";
                 AddSoftwareNode.transform.GetChild(2).gameObject.GetComponent<MPGraphNodeInputPort>()
                     .id = "Add";
+
+                addSoftwareComponent.ClearUnecessaryComponents();
 
                 return addSoftwareComponent;
             }

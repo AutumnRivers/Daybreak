@@ -18,6 +18,13 @@ namespace Daybreak_Midnight.XLogic.CampaignNotes
 
         public override string NodeID => ID;
 
+        public void ClearUnecessaryComponents()
+        {
+            var component = gameObject.GetComponent<MPGraphNodeAddCampaignNote>();
+
+            DestroyImmediate(component);
+        }
+
         public override MPGraphNodeData Save()
         {
             data.value = inputField.text;
