@@ -97,30 +97,23 @@ namespace Daybreak_Midnight.XLogic
 
             Console.WriteLine("Loading in XLogic nodes...");
 
-            var removeCampaignNode = CreateFreeformNode<MPGraphNodeRemoveCampaignNote>("GraphNodeRemoveCampaignNote",
-                "REMOVE CAMPAIGN NOTE", "REMOVE", "Remove") as MPGraphNodeRemoveCampaignNote;
+            var removeCampaignNode = CreateFreeformNode<XLogicRemoveCamapginNote>("GraphNodeRemoveCampaignNote",
+                "REMOVE CAMPAIGN NOTE", "REMOVE", "Remove");
 
-            removeCampaignNode.inputField = removeCampaignNode.gameObject.transform.GetChild(5).gameObject
-                    .GetComponent<InputField>();
-
-            removeCampaignNode.ClearUnecessaryComponents();
-
-            var showPopupNode = CreateFreeformNode<MPGraphShowPopup>("GraphNodeShowPopup", "SHOW POPUP", "SHOW", "Show")
-                as MPGraphShowPopup;
-
-            showPopupNode.inputField = showPopupNode.gameObject.transform.GetChild(5).gameObject
-                .GetComponent<InputField>();
+            var showPopupNode = CreateFreeformNode<XLogicShowPopup>("GraphNodeShowPopup", "SHOW POPUP", "SHOW", "Show");
 
             showPopupNode.inputField.characterLimit = 500;
 
-            showPopupNode.ClearUnecessaryComponents();
+            var addSoftwareNode = CreateDropdownNode<XLogicAddSoftware>("GraphAddSoftwareNode", "ADD SOFTWARE TO MARKET",
+                "ADD", "Add");
 
             List<MPGraphNode> customLogicNodes = new List<MPGraphNode>()
             {
-                removeCampaignNode, showPopupNode, CreateAddSoftwareNode()
+                removeCampaignNode, showPopupNode, addSoftwareNode
             };
 
-            MPGraphNode CreateFreeformNode<NodeType>(string nodeName, string title, string inputTitle, string inputID) where NodeType : MPGraphNode
+            FreeformXLogicNode CreateFreeformNode<NodeType>(string nodeName, string title, string inputTitle, string inputID)
+                where NodeType : FreeformXLogicNode
             {
                 MPGraphNode AddCampaignNode = __instance.allNodeTypes.FirstOrDefault(p => p.name == "GraphNodeCampaignNote");
                 GameObject AddCampaignNodeObject = AddCampaignNode.gameObject;
@@ -136,7 +129,7 @@ namespace Daybreak_Midnight.XLogic
 
                 GameObject selObj = FreeformNode.transform.GetChild(4).gameObject;
 
-                removeCampaignNoteComponent.SetPrivateMPGraphNodeField<MPGraphNode, GameObject>("selected", selObj);
+                removeCampaignNoteComponent.AddSelected(selObj);
 
                 removeCampaignNoteComponent.title = FreeformNode.transform.GetChild(1).gameObject.GetComponent<Text>();
 
@@ -146,10 +139,16 @@ namespace Daybreak_Midnight.XLogic
                 FreeformNode.transform.GetChild(2).gameObject.GetComponent<MPGraphNodeInputPort>()
                     .id = inputID;
 
+                removeCampaignNoteComponent.inputField = removeCampaignNoteComponent.gameObject.transform.GetChild(5).gameObject
+                    .GetComponent<InputField>();
+
+                removeCampaignNoteComponent.ClearUnecessaryComponents();
+
                 return removeCampaignNoteComponent;
             }
 
-            MPGraphNode CreateDropdownNode<NodeType>(string nodeName, string title, string inputTitle, string inputID) where NodeType : MPGraphNode
+            DropdownXLogicNode CreateDropdownNode<NodeType>(string nodeName, string title, string inputTitle, string inputID)
+                where NodeType : DropdownXLogicNode
             {
                 MPGraphNode AddMissionNode = __instance.allNodeTypes.FirstOrDefault(p => p.name == "GraphNodeMission");
                 GameObject AddMissionNodeObject = AddMissionNode.gameObject;
@@ -161,52 +160,21 @@ namespace Daybreak_Midnight.XLogic
                 var addMissionComponent = DropdownNode.GetComponent<MPGraphNodeMission>();
                 var addSoftwareComponent = DropdownNode.AddComponent<NodeType>();
 
-                /*GameObject dropdownObj = DropdownNode.transform.GetChild(5).gameObject;
-
-                addSoftwareComponent.dropdown = dropdownObj.GetComponent<Dropdown>();*/
-
-                GameObject selObj = DropdownNode.transform.GetChild(4).gameObject;
-
-                addSoftwareComponent.SetPrivateMPGraphNodeField("selected", selObj);
-
-                addSoftwareComponent.title = DropdownNode.transform.GetChild(1).gameObject.GetComponent<Text>();
-
-                addSoftwareComponent.title.text = "ADD SOFTWARE TO B.M.";
-
-                DropdownNode.transform.GetChild(2).gameObject.GetComponent<Text>().text = "ADD";
-                DropdownNode.transform.GetChild(2).gameObject.GetComponent<MPGraphNodeInputPort>()
-                    .id = "Add";
-
-                return addSoftwareComponent;
-            }
-
-            MPGraphNode CreateAddSoftwareNode()
-            {
-                MPGraphNode AddMissionNode = __instance.allNodeTypes.FirstOrDefault(p => p.name == "GraphNodeMission");
-                GameObject AddMissionNodeObject = AddMissionNode.gameObject;
-
-                GameObject AddSoftwareNode = UnityEngine.Object.Instantiate(AddMissionNodeObject, xLogic.transform);
-
-                AddSoftwareNode.name = "GraphAddSoftwareNode";
-
-                var addMissionComponent = AddSoftwareNode.GetComponent<MPGraphNodeMission>();
-                var addSoftwareComponent = AddSoftwareNode.AddComponent<MPGraphAddSoftware>();
-
-                GameObject dropdownObj = AddSoftwareNode.transform.GetChild(5).gameObject;
+                GameObject dropdownObj = DropdownNode.transform.GetChild(5).gameObject;
 
                 addSoftwareComponent.dropdown = dropdownObj.GetComponent<Dropdown>();
 
-                GameObject selObj = AddSoftwareNode.transform.GetChild(4).gameObject;
+                GameObject selObj = DropdownNode.transform.GetChild(4).gameObject;
 
-                addSoftwareComponent.SetPrivateMPGraphNodeField("selected", selObj);
+                addSoftwareComponent.AddSelected(selObj);
 
-                addSoftwareComponent.title = AddSoftwareNode.transform.GetChild(1).gameObject.GetComponent<Text>();
+                addSoftwareComponent.title = DropdownNode.transform.GetChild(1).gameObject.GetComponent<Text>();
 
-                addSoftwareComponent.title.text = "ADD SOFTWARE TO B.M.";
+                addSoftwareComponent.title.text = title;
 
-                AddSoftwareNode.transform.GetChild(2).gameObject.GetComponent<Text>().text = "ADD";
-                AddSoftwareNode.transform.GetChild(2).gameObject.GetComponent<MPGraphNodeInputPort>()
-                    .id = "Add";
+                DropdownNode.transform.GetChild(2).gameObject.GetComponent<Text>().text = inputTitle;
+                DropdownNode.transform.GetChild(2).gameObject.GetComponent<MPGraphNodeInputPort>()
+                    .id = inputID;
 
                 addSoftwareComponent.ClearUnecessaryComponents();
 
@@ -218,6 +186,8 @@ namespace Daybreak_Midnight.XLogic
             allNodeTypes.AddRange(customLogicNodes);
 
             __instance.allNodeTypes = allNodeTypes;
+
+            XLogicNodes.Clear();
 
             XLogicNodes.AddRange(customLogicNodes);
 
@@ -232,12 +202,12 @@ namespace Daybreak_Midnight.XLogic
 
             var xLogicTranslations = new Dictionary<Tuple<string, string>, string[]>
             {
-                { new Tuple<string, string>(MPGraphNodeRemoveCampaignNote.ID, "Remove"), new string[1] { "remove" } },
-                { new Tuple<string, string>(MPGraphNodeRemoveCampaignNote.ID, "Then"), new string[1] { "removed" } },
-                { new Tuple<string, string>(MPGraphAddSoftware.ID, "Add"), new string[1] { "add" } },
-                { new Tuple<string, string>(MPGraphAddSoftware.ID, "Then"), new string[1] { "added" } },
-                { new Tuple<string, string>(MPGraphShowPopup.ID, "Show"), new string[1] { "show" } },
-                { new Tuple<string, string>(MPGraphShowPopup.ID, "Then"), new string[1] { "showed" } }
+                { new Tuple<string, string>(XLogicRemoveCamapginNote.ID, "Remove"), new string[1] { "remove" } },
+                { new Tuple<string, string>(XLogicRemoveCamapginNote.ID, "Then"), new string[1] { "removed" } },
+                { new Tuple<string, string>(XLogicAddSoftware.ID, "Add"), new string[1] { "add" } },
+                { new Tuple<string, string>(XLogicAddSoftware.ID, "Then"), new string[1] { "added" } },
+                { new Tuple<string, string>(XLogicShowPopup.ID, "Show"), new string[1] { "show" } },
+                { new Tuple<string, string>(XLogicShowPopup.ID, "Then"), new string[1] { "showed" } }
             };
 
             var originalTranslations = (Dictionary<Tuple<string, string>, string[]>)__instance.GetPrivateStaticField("customNodePortTranslations");

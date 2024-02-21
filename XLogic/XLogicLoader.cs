@@ -125,18 +125,18 @@ namespace Daybreak_Midnight.XLogic
                 {
                     campaignLogic.AddNode<RelayNode>();
                 }
-                else if (node3.nodeID == MPGraphNodeRemoveCampaignNote.ID)
+                else if (node3.nodeID == XLogicRemoveCamapginNote.ID)
                 {
                     MPGraphNodeDataString mPGraphNodeDataString3 = node3 as MPGraphNodeDataString;
                     var node = campaignLogic.AddNode<RemoveCampaignNoteNode>();
                     node.note = mPGraphNodeDataString3.value;
-                } else if(node3.nodeID == MPGraphAddSoftware.ID)
+                } else if(node3.nodeID == XLogicAddSoftware.ID)
                 {
                     MPGraphNodeDataString mPGraphNodeDataString3 = node3 as MPGraphNodeDataString;
                     var node = campaignLogic.AddNode<AddSoftwareNode>();
                     node.programName = ProgramLookup.Programs[mPGraphNodeDataString3.value];
                 }
-                else if (node3.nodeID == MPGraphShowPopup.ID)
+                else if (node3.nodeID == XLogicShowPopup.ID)
                 {
                     MPGraphNodeDataString mPGraphNodeDataString3 = node3 as MPGraphNodeDataString;
                     var node = campaignLogic.AddNode<ShowPopupNode>();

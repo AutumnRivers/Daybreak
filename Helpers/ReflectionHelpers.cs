@@ -34,6 +34,13 @@ namespace Daybreak_Midnight.Helpers
             field.SetValue(item, newValue);
         }
 
+        public static void SetPrivateXLogicNodeField<T, T2>(this T item, string fieldName, T2 newValue)
+        {
+            var type = item.GetType().BaseType.BaseType.BaseType.BaseType;
+            var field = type.GetField(fieldName, flags);
+            field.SetValue(item, newValue);
+        }
+
         public static object GetPrivateProperty(this object item, string propName)
         {
             PropertyInfo prop = item.GetType().GetProperty(propName, flags);

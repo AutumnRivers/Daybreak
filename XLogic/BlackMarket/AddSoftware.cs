@@ -11,11 +11,9 @@ using UnityEngine.UI;
 namespace Daybreak_Midnight.XLogic.BlackMarket
 {
     [XLogicNode]
-    public class MPGraphAddSoftware : MPGraphNode<MPGraphNodeDataString>
+    public class XLogicAddSoftware : DropdownXLogicNode
     {
         public static string ID = "AddSoftwareNode";
-
-        public Dropdown dropdown;
 
         public override string NodeID => ID;
 
@@ -27,57 +25,9 @@ namespace Daybreak_Midnight.XLogic.BlackMarket
             "Spoon", "The Trashman", "Trojan", "Troll Toll", "Tunnel", "Vorpal Sword", "Pr0xy"
         ];
 
-        public void ClearUnecessaryComponents()
+        public XLogicAddSoftware()
         {
-            var component = gameObject.GetComponent<MPGraphNodeMission>();
-
-            DestroyImmediate(component);
-        }
-
-        public override void Init()
-        {
-            base.Init();
-            RefreshDropdown();
-        }
-
-        private void RefreshDropdown()
-        {
-            dropdown.ClearOptions();
-
-            List<Dropdown.OptionData> list = [];
-
-            foreach(string program in software)
-            {
-                var data = new Dropdown.OptionData
-                {
-                    text = program
-                };
-
-                list.Add(data);
-            }
-
-            dropdown.AddOptions(list);
-        }
-
-        public override MPGraphNodeData Save()
-        {
-            if (dropdown.value < 0 || dropdown.value >= software.Count)
-            {
-                data.value = "";
-            }
-            else
-            {
-                data.value = software[dropdown.value];
-            }
-
-            return base.Save();
-        }
-
-        protected override void OnRestore(MPGraphNodeDataString data)
-        {
-            int index = software.FindIndex(s => s == data.value);
-
-            dropdown.value = index > -1 ? index : 0;
+            DropdownItems = software;
         }
     }
 

@@ -10,34 +10,6 @@ using UnityEngine.UI;
 namespace Daybreak_Midnight.XLogic.CampaignNotes
 {
     [XLogicNode]
-    public class MPGraphNodeRemoveCampaignNote : MPGraphNode<MPGraphNodeDataString>
-    {
-        public static string ID = "RemoveCampaignNote";
-
-        public InputField inputField;
-
-        public override string NodeID => ID;
-
-        public void ClearUnecessaryComponents()
-        {
-            var component = gameObject.GetComponent<MPGraphNodeAddCampaignNote>();
-
-            DestroyImmediate(component);
-        }
-
-        public override MPGraphNodeData Save()
-        {
-            data.value = inputField.text;
-            return base.Save();
-        }
-
-        protected override void OnRestore(MPGraphNodeDataString data)
-        {
-            inputField.text = data.value;
-        }
-    }
-
-    [XLogicNode]
     public class XLogicRemoveCamapginNote : FreeformXLogicNode
     {
         public static string ID = "RemoveCampaignNote";
