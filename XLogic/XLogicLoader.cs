@@ -11,6 +11,7 @@ using XNode;
 
 using Daybreak_Midnight.XLogic.CampaignNotes;
 using Daybreak_Midnight.XLogic.BlackMarket;
+using Daybreak_Midnight.XLogic.UI;
 
 using Daybreak_Midnight.Helpers;
 
@@ -134,6 +135,12 @@ namespace Daybreak_Midnight.XLogic
                     MPGraphNodeDataString mPGraphNodeDataString3 = node3 as MPGraphNodeDataString;
                     var node = campaignLogic.AddNode<AddSoftwareNode>();
                     node.programName = ProgramLookup.Programs[mPGraphNodeDataString3.value];
+                }
+                else if (node3.nodeID == MPGraphShowPopup.ID)
+                {
+                    MPGraphNodeDataString mPGraphNodeDataString3 = node3 as MPGraphNodeDataString;
+                    var node = campaignLogic.AddNode<ShowPopupNode>();
+                    node.note = mPGraphNodeDataString3.value;
                 }
             }
 

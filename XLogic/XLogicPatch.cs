@@ -18,6 +18,7 @@ using UnityEngine.UI;
 
 using Daybreak_Midnight.XLogic.CampaignNotes;
 using Daybreak_Midnight.XLogic.BlackMarket;
+using Daybreak_Midnight.XLogic.UI;
 
 using Daybreak_Midnight.Helpers;
 
@@ -37,81 +38,6 @@ namespace Daybreak_Midnight.XLogic
         private static readonly List<MPGraphNode> XLogicNodes = [];
 
         private static CustomGameData Campaign => (CustomGameData)CustomGameData.Instance;
-
-        /*[HarmonyPostfix]
-        [HarmonyPatch(typeof(CustomGameData), nameof(CustomGameData.LoadCampaign))]
-        [HarmonyPatch(new Type[] {typeof(string), typeof(ulong)})]
-        public static void XLogicDebug()
-        {
-            Console.WriteLine("test");
-
-            Console.WriteLine("test2");
-
-            CustomGameData customGameData = (CustomGameData)CustomGameData.Instance;
-
-            var logicObj = customGameData.GetPrivateField("campaignLogic");
-
-            var campaignLogic = (StoryGraph.StoryGraph)logicObj;
-
-            foreach (var node in campaignLogic.nodes)
-            {
-                Console.WriteLine($"{node} Ports:");
-                foreach (var port in node.Ports)
-                {
-                    Console.WriteLine($">>> {port.fieldName} : {port.ValueType.Name} <<<");
-                    Console.WriteLine($">>>> Is dynamic : {port.IsDynamic} <<<<<");
-                }
-            }
-        }*/
-
-        /*[HarmonyPostfix]
-        [HarmonyPatch(typeof(CustomGameData), "LoadInLogic")]
-        public static void LoadInXLogicPostfix(CustomGameData customGameData)
-        {
-            Console.WriteLine("Loading in XLogic...");
-
-            object logicObj = Campaign.GetPrivateField("campaignLogic");
-
-            Console.WriteLine(logicObj);
-
-            StoryGraph.StoryGraph campaignLogic = (StoryGraph.StoryGraph)logicObj;
-
-            foreach (var node in campaignLogic.nodes)
-            {
-                Console.WriteLine($"{node.name} Ports:");
-                foreach (var port in node.Ports)
-                {
-                    Console.WriteLine($">>> {port.fieldName} : {port.ValueType.Name} <<<");
-                    Console.WriteLine($">>>> Is dynamic : {port.IsDynamic} <<<<<");
-                }
-            }
-
-            string campaignLogicFilePath = CampaignEditorUtil.GetCampaignLogicFilePath(customGameData.CampaignID, customGameData.WorkshopID);
-            if (!File.Exists(campaignLogicFilePath))
-            {
-                Debug.LogError("Could not find logic file");
-                return;
-            }
-
-            string s = File.ReadAllText(campaignLogicFilePath);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(MPGraphData));
-            StringReader stringReader = new StringReader(s);
-            MPGraphData mPGraphData = (MPGraphData)xmlSerializer.Deserialize(stringReader);
-            stringReader.Close();
-
-            foreach (MPGraphNodeData node3 in mPGraphData.nodes)
-            {
-                if (node3.nodeID == MPGraphNodeRemoveCampaignNote.ID)
-                {
-                    MPGraphNodeDataString mPGraphNodeDataString3 = node3 as MPGraphNodeDataString;
-                    campaignLogic.AddNode<RemoveCampaignNoteNode>().note = mPGraphNodeDataString3.value;
-                }
-            }
-
-            Campaign.SetPrivateField("campaignLogic", campaignLogic);
-
-            Console.WriteLine("Loaded in XLogic!");
-        }*/
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MPGraphCreateNodeContextMenu))]
@@ -171,43 +97,87 @@ namespace Daybreak_Midnight.XLogic
 
             Console.WriteLine("Loading in XLogic nodes...");
 
+            var removeCampaignNode = CreateFreeformNode<MPGraphNodeRemoveCampaignNote>("GraphNodeRemoveCampaignNote",
+                "REMOVE CAMPAIGN NOTE", "REMOVE", "Remove") as MPGraphNodeRemoveCampaignNote;
+
+            removeCampaignNode.inputField = removeCampaignNode.gameObject.transform.GetChild(5).gameObject
+                    .GetComponent<InputField>();
+
+            removeCampaignNode.ClearUnecessaryComponents();
+
+            var showPopupNode = CreateFreeformNode<MPGraphShowPopup>("GraphNodeShowPopup", "SHOW POPUP", "SHOW", "Show")
+                as MPGraphShowPopup;
+
+            showPopupNode.inputField = showPopupNode.gameObject.transform.GetChild(5).gameObject
+                .GetComponent<InputField>();
+
+            showPopupNode.inputField.characterLimit = 500;
+
+            showPopupNode.ClearUnecessaryComponents();
+
             List<MPGraphNode> customLogicNodes = new List<MPGraphNode>()
             {
-                CreateRemoveCampaignNode(), CreateAddSoftwareNode()
+                removeCampaignNode, showPopupNode, CreateAddSoftwareNode()
             };
 
-            MPGraphNode CreateRemoveCampaignNode()
+            MPGraphNode CreateFreeformNode<NodeType>(string nodeName, string title, string inputTitle, string inputID) where NodeType : MPGraphNode
             {
                 MPGraphNode AddCampaignNode = __instance.allNodeTypes.FirstOrDefault(p => p.name == "GraphNodeCampaignNote");
                 GameObject AddCampaignNodeObject = AddCampaignNode.gameObject;
 
-                GameObject RemoveCampaignNode = UnityEngine.Object.Instantiate(AddCampaignNodeObject, xLogic.transform);
+                GameObject FreeformNode = UnityEngine.Object.Instantiate(AddCampaignNodeObject, xLogic.transform);
 
-                RemoveCampaignNode.name = "GraphNodeRemoveCampaignNote";
+                FreeformNode.name = nodeName;
 
-                var addCampaignNoteComponent = RemoveCampaignNode.GetComponent<MPGraphNodeAddCampaignNote>();
-                var removeCampaignNoteComponent = RemoveCampaignNode.AddComponent<MPGraphNodeRemoveCampaignNote>();
+                var addCampaignNoteComponent = FreeformNode.GetComponent<MPGraphNodeAddCampaignNote>();
+                var removeCampaignNoteComponent = FreeformNode.AddComponent<NodeType>();
 
                 addCampaignNoteComponent.enabled = false;
 
-                GameObject selObj = RemoveCampaignNode.transform.GetChild(4).gameObject;
+                GameObject selObj = FreeformNode.transform.GetChild(4).gameObject;
 
                 removeCampaignNoteComponent.SetPrivateMPGraphNodeField<MPGraphNode, GameObject>("selected", selObj);
 
-                removeCampaignNoteComponent.inputField = RemoveCampaignNode.transform.GetChild(5).gameObject
-                    .GetComponent<InputField>();
+                removeCampaignNoteComponent.title = FreeformNode.transform.GetChild(1).gameObject.GetComponent<Text>();
 
-                removeCampaignNoteComponent.title = RemoveCampaignNode.transform.GetChild(1).gameObject.GetComponent<Text>();
+                removeCampaignNoteComponent.title.text = title;
 
-                removeCampaignNoteComponent.title.text = "REMOVE CAMPAIGN NOTE";
-
-                RemoveCampaignNode.transform.GetChild(2).gameObject.GetComponent<Text>().text = "REMOVE";
-                RemoveCampaignNode.transform.GetChild(2).gameObject.GetComponent<MPGraphNodeInputPort>()
-                    .id = "Remove";
-
-                removeCampaignNoteComponent.ClearUnecessaryComponents();
+                FreeformNode.transform.GetChild(2).gameObject.GetComponent<Text>().text = inputTitle;
+                FreeformNode.transform.GetChild(2).gameObject.GetComponent<MPGraphNodeInputPort>()
+                    .id = inputID;
 
                 return removeCampaignNoteComponent;
+            }
+
+            MPGraphNode CreateDropdownNode<NodeType>(string nodeName, string title, string inputTitle, string inputID) where NodeType : MPGraphNode
+            {
+                MPGraphNode AddMissionNode = __instance.allNodeTypes.FirstOrDefault(p => p.name == "GraphNodeMission");
+                GameObject AddMissionNodeObject = AddMissionNode.gameObject;
+
+                GameObject DropdownNode = UnityEngine.Object.Instantiate(AddMissionNodeObject, xLogic.transform);
+
+                DropdownNode.name = nodeName;
+
+                var addMissionComponent = DropdownNode.GetComponent<MPGraphNodeMission>();
+                var addSoftwareComponent = DropdownNode.AddComponent<NodeType>();
+
+                /*GameObject dropdownObj = DropdownNode.transform.GetChild(5).gameObject;
+
+                addSoftwareComponent.dropdown = dropdownObj.GetComponent<Dropdown>();*/
+
+                GameObject selObj = DropdownNode.transform.GetChild(4).gameObject;
+
+                addSoftwareComponent.SetPrivateMPGraphNodeField("selected", selObj);
+
+                addSoftwareComponent.title = DropdownNode.transform.GetChild(1).gameObject.GetComponent<Text>();
+
+                addSoftwareComponent.title.text = "ADD SOFTWARE TO B.M.";
+
+                DropdownNode.transform.GetChild(2).gameObject.GetComponent<Text>().text = "ADD";
+                DropdownNode.transform.GetChild(2).gameObject.GetComponent<MPGraphNodeInputPort>()
+                    .id = "Add";
+
+                return addSoftwareComponent;
             }
 
             MPGraphNode CreateAddSoftwareNode()
@@ -265,7 +235,9 @@ namespace Daybreak_Midnight.XLogic
                 { new Tuple<string, string>(MPGraphNodeRemoveCampaignNote.ID, "Remove"), new string[1] { "remove" } },
                 { new Tuple<string, string>(MPGraphNodeRemoveCampaignNote.ID, "Then"), new string[1] { "removed" } },
                 { new Tuple<string, string>(MPGraphAddSoftware.ID, "Add"), new string[1] { "add" } },
-                { new Tuple<string, string>(MPGraphAddSoftware.ID, "Complete"), new string[1] { "added" } }
+                { new Tuple<string, string>(MPGraphAddSoftware.ID, "Then"), new string[1] { "added" } },
+                { new Tuple<string, string>(MPGraphShowPopup.ID, "Show"), new string[1] { "show" } },
+                { new Tuple<string, string>(MPGraphShowPopup.ID, "Then"), new string[1] { "showed" } }
             };
 
             var originalTranslations = (Dictionary<Tuple<string, string>, string[]>)__instance.GetPrivateStaticField("customNodePortTranslations");

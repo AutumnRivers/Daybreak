@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Reflection;
+using System.Collections.Generic;
+using System.Text;
 
 using MPGraph;
 using StoryGraph;
@@ -7,12 +8,12 @@ using StoryGraph;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Daybreak_Midnight.XLogic.CampaignNotes
+namespace Daybreak_Midnight.XLogic.UI
 {
     [XLogicNode]
-    public class MPGraphNodeRemoveCampaignNote : MPGraphNode<MPGraphNodeDataString>
+    public class MPGraphShowPopup : MPGraphNode<MPGraphNodeDataString>
     {
-        public static string ID = "RemoveCampaignNote";
+        public static string ID = "ShowPopup";
 
         public InputField inputField;
 
@@ -38,15 +39,15 @@ namespace Daybreak_Midnight.XLogic.CampaignNotes
     }
 
     [XLogicNode]
-    public class XLogicRemoveCamapginNote : FreeformXLogicNode
+    public class MPGraphShowPopupXLogic : FreeformXLogicNode
     {
-        public static string ID = "RemoveCampaignNote";
+        public static string ID = "ShowPopup";
 
         public override string NodeID => ID;
     }
 
     [XLogicInternalNode]
-    public class RemoveCampaignNoteNode : StoryGraphNode
+    public class ShowPopupNode : StoryGraphNode
     {
         [Input(ShowBackingValue.Unconnected, ConnectionType.Multiple, TypeConstraint.None, false)]
         public TriggerPort remove;
@@ -56,31 +57,19 @@ namespace Daybreak_Midnight.XLogic.CampaignNotes
 
         public string note;
 
-        public override string Name => "Remove campaign note: " + note;
+        public override string Name => "Show popup: " + note;
 
-        public RemoveCampaignNoteNode()
+        public ShowPopupNode()
         {
-            AddDynamicInput(typeof(TriggerPort), fieldName: "remove");
-            AddDynamicOutput(typeof(TriggerPort), fieldName: "removed");
+            AddDynamicInput(typeof(TriggerPort), fieldName: "show");
+            AddDynamicOutput(typeof(TriggerPort), fieldName: "showed");
         }
 
         public override void Trigger(bool synapse = false)
         {
-            if (!GameData.Progress.campaignNotes.Contains(note))
-            {
-                base.Trigger(synapse);
-                Next("removed", synapse);
-            }
-            else if (synapse)
-            {
-                base.Trigger(synapse);
-                if (GameData.Progress.campaignNotes.Contains(note))
-                {
-                    GameData.Progress.campaignNotes.Remove(note);
-                }
+            Popup.ShowMessage("", note);
 
-                Next("removed", synapse);
-            }
+            Next("showed", synapse);
         }
     }
 }
