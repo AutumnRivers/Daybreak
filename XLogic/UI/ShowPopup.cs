@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Daybreak_Midnight.XLogic.UI
 {
-    [XLogicNode]
+    [XLogicGraphNode]
     public class XLogicShowPopup : FreeformXLogicNode
     {
         public static string ID = "ShowPopup";

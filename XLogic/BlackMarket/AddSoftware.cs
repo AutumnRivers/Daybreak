@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Daybreak_Midnight.XLogic.BlackMarket
 {
-    [XLogicNode]
+    [XLogicGraphNode]
     public class XLogicAddSoftware : DropdownXLogicNode
     {
         public static string ID = "AddSoftwareNode";

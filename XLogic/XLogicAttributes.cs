@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Daybreak_Midnight.XLogic
 {
-    internal class XLogicNodeAttribute : Attribute
+    internal class XLogicGraphNodeAttribute : Attribute
     {
 
     }

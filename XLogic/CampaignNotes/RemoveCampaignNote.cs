@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace Daybreak_Midnight.XLogic.CampaignNotes
 {
-    [XLogicNode]
+    [XLogicGraphNode]
     public class XLogicRemoveCamapginNote : FreeformXLogicNode
     {
         public static string ID = "RemoveCampaignNote";
