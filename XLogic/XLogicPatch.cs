@@ -32,6 +32,32 @@ namespace Daybreak_Midnight.XLogic
      * Extends Midnight Protocol's custom campaign logic system to allow for new, custom logic to be placed and parsed.
      */
 
+    public class XLogic
+    {
+        public static void Log(string message)
+        {
+            Debug.Log("[Daybreak XLogic] " + message);
+        }
+
+        public static IEnumerable<Type> GetXLogicGraphNodes()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
+            foreach(Type type in assembly.GetTypes())
+            {
+                if(!type.IsSubclassOf(typeof(XLogicNode)))
+                {
+                    continue;
+                }
+
+                if(type.GetCustomAttributes(typeof(XLogicGraphNodeAttribute), false).Length > 0)
+                {
+                    yield return type;
+                }
+            }
+        }
+    }
+
     [HarmonyPatch]
     public class XLogicPatch
     {
@@ -63,7 +89,7 @@ namespace Daybreak_Midnight.XLogic
 
             foreach (MPGraphNode node in XLogicNodes)
             {
-                Console.WriteLine($"Adding XLogic Node: {node.title.text}");
+                XLogic.Log($"Adding XLogic Node: {node.title.text}");
 
                 Button nodeButton = (Button)createButtonMethod.Invoke(__instance, [node.title.text]);
 
@@ -97,6 +123,7 @@ namespace Daybreak_Midnight.XLogic
 
             Console.WriteLine("Loading in XLogic nodes...");
 
+            #region add xlogic nodes
             var removeCampaignNode = CreateFreeformNode<XLogicRemoveCamapginNote>("GraphNodeRemoveCampaignNote",
                 "REMOVE CAMPAIGN NOTE", "REMOVE", "Remove");
 
@@ -106,6 +133,7 @@ namespace Daybreak_Midnight.XLogic
 
             var addSoftwareNode = CreateDropdownNode<XLogicAddSoftware>("GraphAddSoftwareNode", "ADD SOFTWARE TO MARKET",
                 "ADD", "Add");
+            #endregion add xlogic nodes
 
             List<MPGraphNode> customLogicNodes = new List<MPGraphNode>()
             {
